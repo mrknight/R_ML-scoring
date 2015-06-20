@@ -1,10 +1,9 @@
-#dig = read.csv("/home/dat/WORK/DB/DESCRIPTORS/DIG/DIG10.2_XP.csv")
-#SP = read.csv("/home/dat/WORK/DB/DESCRIPTORS/DIG10.2/cs-confgen_all_SP.csv")
-#XP = read.csv("/home/dat/WORK/DB/DESCRIPTORS/DIG10.2/cs-confgen_all_XP.csv")
-#ASP = read.csv("/home/dat/WORK/DB/DESCRIPTORS/DIG10.2/cs-confgen_all_asp.csv")
-#PLP = read.csv("/home/dat/WORK/DB/DESCRIPTORS/DIG10.2/cs-confgen_all_plp.csv")
-#chem = read.csv("/home/dat/WORK/DB/DESCRIPTORS/DIG10.2/cs-confgen_all_chemscore.csv")
-#gold = read.csv("/home/dat/WORK/DB/DESCRIPTORS/DIG10.2/cs-confgen_all_goldscore.csv")
+#SP = read.csv("/home/dat/WORK/DB/DESCRIPTORS/DIG10.2/confgen/cs-confgen_all_SP.csv")
+#XP = read.csv("/home/dat/WORK/DB/DESCRIPTORS/DIG10.2/confgen/cs-confgen_all_XP.csv")
+ASP = read.csv("/home/dat/WORK/DB/DESCRIPTORS/DIG10.2/confgen/cs-confgen_all_asp.csv")
+#PLP = read.csv("/home/dat/WORK/DB/DESCRIPTORS/DIG10.2/confgen/cs-confgen_all_plp.csv")
+#chem = read.csv("/home/dat/WORK/DB/DESCRIPTORS/DIG10.2/confgen/cs-confgen_all_chemscore.csv")
+gold = read.csv("/home/dat/WORK/DB/DESCRIPTORS/DIG10.2/confgen/cs-confgen_all_goldscore.csv")
 
 true_rank = c(7, 8, 6, 4, 3, 5, 2, 1, 10, 9)
 

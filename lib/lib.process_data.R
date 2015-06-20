@@ -186,16 +186,18 @@ createMixTrainingTestData <- function(path, prefix = c("CASF12/CASF12_training_"
 #createCombiData(path = "/home/dat/WORK/dev/rfscore/bin/", prefix = "CASF12_core_", descName = c("elementsv2", "SIFt"))
 #createCombiData(path = "/home/dat/WORK/dev/rfscore/bin/", prefix = "CASF12_refined_", descName = c("elementsv2", "SIFt"))
 #
-createCombiData <- function(path, prefix, cutoff = 12, binsize = 0, descName = c("elements", "sybyl"), postfix="") {
+createCombiData <- function(path, prefix, cutoff = 12, binsize = 0, descName = c("elementsv2", "SIFt"), postfix="") {
   data1 = read.csv(concatPath(path, prefix, cutoff, binsize, descName[1], postfix), na.strings=c(".", "NA", "", "?"))
   data2 = read.csv(concatPath(path, prefix, cutoff, binsize, descName[2], postfix), na.strings=c(".", "NA", "", "?"))
   # \IMPORTANT remote the col which contains pKd information when combine the standard CASF data
   if (postfix == "") { # remove the pKd col
     data2 = data2[,-1]
+    postfix = paste(postfix, "_process", sep="")
   }
   nameIndex1 = length(data1[1,])
   nameIndex2 = length(data2[1,])
   mergeData12   = merge(data1, data2, by.x = nameIndex1, by.y = nameIndex2)
+  colnames(mergeData12)[2] = "pKd.pKi"  
   # write to file
   write.table(mergeData12, file = paste(path,prefix,descName[1],"-",descName[2],"_c",cutoff,"b",binsize, postfix,".csv", sep=""), sep = ",", row.names = FALSE)  
 }

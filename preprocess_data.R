@@ -46,12 +46,12 @@ runCombiData <- function() {
     }
   target = "DUD-E_"
   path2Name = "/home/dat/WORK/DB/DESCRIPTORS/DUD-E/"
-  #for (post in c("_ADA", "_RENI", "_FGFR1")) {
-
-  createCombiData(path = path2Name, prefix = target, descName = c("elementsv2", "SIFt"), postfix = "_ADA") 
-  processTestDataWithoutScore(path2Name, target, "elementsv2-SIFt_c12b0", postfix = "_ADA")
-  write.table(merge3DescCASF(path2Name, target, "_ADA"), file = paste(path2Name, target, concatCutoffAndBinsize("elementsv2-SIFt-xscore"), "_ADA", ".csv", sep=""), sep = ",", row.names = FALSE)   
-  processTestDataWithoutScore(path2Name, target, "elementsv2-SIFt-xscore_c12b0", postfix = "_ADA")
+  for (post in c("_RENI", "_FGFR1")) { #, "_ADA"
+    createCombiData(path = path2Name, prefix = target, descName = c("elementsv2", "SIFt"), postfix = post) 
+    processTestDataWithoutScore(path2Name, target, "elementsv2-SIFt_c12b0", postfix = post)
+    write.table(merge3DescCASF(path2Name, target, post), file = paste(path2Name, target, concatCutoffAndBinsize("elementsv2-SIFt-xscore"), post, ".csv", sep=""), sep = ",", row.names = FALSE)   
+    processTestDataWithoutScore(path2Name, target, "elementsv2-SIFt-xscore_c12b0", postfix = post)
+  }
     
 }
 
