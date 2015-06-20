@@ -6,10 +6,10 @@
 # data as dataframe
 makeUniqueList <- function(data, col = 1) {
   # rounding the value
-  data[,col] = round(data[,col],3)
+  data[,col] = round(data[,col],6)
   for (i in seq(length(data[,col]))) {
     if (sum(data[i, col] == data[, col]) > 1) { # if exist more than one entry with the same value
-      data[i, col] = data[i, col] + 0.001 # increase the original valueby 0.001
+      data[i, col] = data[i, col] + 0.000001 # increase the original valueby 0.000001 (could be dealt with 1mil entries)
     }
   }
   return (data)
@@ -67,7 +67,7 @@ mergeScoresData <- function(outputDir = "/home/dat/WORK/output/", dataSet1, data
 }
 
 # create full desc depends on cutoff and binsize value (only matters for desc=credo AND binsize=12)
-concatCutoffAndBinsize <- function(desc, cutoff, binsize) {
+concatCutoffAndBinsize <- function(desc, cutoff=12, binsize=0) {
   if (desc == "credo" && binsize == 12) {
       fullDesc = paste(desc,"_c",cutoff, sep="")
   }
@@ -190,30 +190,26 @@ createCombiData <- function(path, prefix, cutoff = 12, binsize = 0, descName = c
   data1 = read.csv(concatPath(path, prefix, cutoff, binsize, descName[1], postfix), na.strings=c(".", "NA", "", "?"))
   data2 = read.csv(concatPath(path, prefix, cutoff, binsize, descName[2], postfix), na.strings=c(".", "NA", "", "?"))
   # \IMPORTANT remote the col which contains pKd information when combine the standard CASF data
-  if (postfix == "") {
-    data2_removePkD = data2[,-1]
-  }
-  else {
-    data2_removePkD = data2
-    postfix = paste(postfix,"_unprocess",sep="")    
+  if (postfix == "") { # remove the pKd col
+    data2 = data2[,-1]
   }
   nameIndex1 = length(data1[1,])
-  nameIndex2 = length(data2_removePkD[1,])
-  mergeData12   = merge(data1, data2_removePkD, by.x = nameIndex1, by.y = nameIndex2)
+  nameIndex2 = length(data2[1,])
+  mergeData12   = merge(data1, data2, by.x = nameIndex1, by.y = nameIndex2)
   # write to file
   write.table(mergeData12, file = paste(path,prefix,descName[1],"-",descName[2],"_c",cutoff,"b",binsize, postfix,".csv", sep=""), sep = ",", row.names = FALSE)  
 }
 
 # process the test set by adding docking scores/pIC50 to 2. col (like standard CASF data structure and make this scores unique
-#
+#           
 # USAGE: 
 #createCombiData(path = "/home/dat/WORK/dev/rfscore/bin/", prefix = "CASF12_core_", descName = c("elementsv2", "SIFt"))
 #
-processTestData <- function(path, prefix, cutoff = 12, binsize = 0, descName = "elements", postfix="_actives") {  
-  data = read.csv(concatPath(path, prefix, cutoff, binsize, descName, paste(postfix,"_unprocess",sep="")), na.strings=c(".", "NA", "", "?"))
+processTestData <- function(path, prefix, cutoff = 12, binsize = 0, descName, postfix, scoreFilename) {  
+  data = read.csv(concatPath(path, prefix, cutoff, binsize, descName, postfix), na.strings=c(".", "NA", "", "?"))
   #scores = read.csv(paste(path, "JMJ", postfix, ".csv", sep=""))
   #data = read.csv(concatPath(path, prefix, cutoff, binsize, descName, paste(postfix,"",sep="")), na.strings=c(".", "NA", "", "?"))
-  scores = read.csv(paste(path, "DIG10.2", postfix, ".csv", sep=""))
+  scores = read.csv(paste(path, scoreFilename, postfix, ".csv", sep=""))
   
   if (length(scores[1,]) > 2) { # if scores has more than 2 cols, then remove the last one (not-used)
     scores = scores[, -length(scores[1,])]
@@ -225,7 +221,7 @@ processTestData <- function(path, prefix, cutoff = 12, binsize = 0, descName = "
   mergeData   = merge(scores, data, by.x = 1, by.y = 1)
   colnames(mergeData)[1] = 'pdb'
   # write to file
-  write.table(mergeData, file = concatPath(path, prefix, cutoff, binsize, descName, postfix), sep = ",", row.names = FALSE)  
+  write.table(mergeData, file = gsub(".csv", "_process.csv", concatPath(path, prefix, cutoff, binsize, descName, postfix)), sep = ",", row.names = FALSE)  
   
 }
   

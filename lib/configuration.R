@@ -5,7 +5,7 @@
 resultPath  = "/home/dat/WORK/output/results/2015-06-23/"
 path2Result = "/home/dat/WORK/output/results/2015-06-23/"
 #path2Result = "results/2015-01-13/"
-path2Name   = "/home/dat/WORK/DB/DESCRIPTORS/DIG/"
+path2Name   = "/home/dat/WORK/DB/DESCRIPTORS/CASF/"
 #path2Name   = "New/"
 
 dataSets = c("CASF12", "CASF13", "CASF14")
@@ -16,3 +16,5 @@ trainingSets = c("refined", "metallo")
 
 proteinList         = c("3PDQ_new", "T36_JMJ_Xray")
 stateList           = c("actives", "inactives")
+
+dockingMethods = c("asp", "plp", "chemscore", "goldscore", "SP", "XP")
