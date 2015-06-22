@@ -1,56 +1,8 @@
 source("lib/lib.validation_extern.R")
 source("lib/lib.process_data.R")
+source("lib/lib.analysis.R")
 source("lib/configuration.R")
 
-###########################################################################
-# DESC: read the classify result from weka output
-###########################################################################
-readClassifyResult <- function(resultPath, data, evalSet, method, desc, cutoff = 12, binsize = 0)  {
-  result = read.csv(paste(resultPath, data,"_", evalSet,"_", method,"_", concatCutoffAndBinsize(desc, cutoff, binsize), ".csv", sep=""), skip = 4)
-  return (result[,2:3])  
-}
-###########################################################################
-# DESC: create heatmaps based on given metric
-###########################################################################
-createHeatmap <- function(metric = "r2.pearson", dataSets, methods, resultPath, evalSet, desc) {
-  heatmap = matrix(NA, nrow = length(dataSets), ncol = length(methods))  
-  rownames(heatmap) = dataSets
-  colnames(heatmap) = methods 
-  for (i in seq(length(dataSets)))
-    # for (desc in descSets)
-    for (j in seq(length(methods))) {
-      data    = dataSets[i]
-      method  = methods[j]      
-      result = readClassifyResult(resultPath, data, evalSet, method, desc)
-      heatmap[i,j] = sqrt(as.numeric(calcValidationMetric(result[,1], result[,2])[metric]))
-    }
-  if (metric == "r2.pearson") {
-    metricName = "R_pearson"
-  }
-  if (metric == "r2m") {
-    metricName = "R_m"
-  }  
-  if (metric == "rse") {
-    metricName = "RMSE"
-  }
-  
-  heatmap = heatmap[nrow(heatmap):1,]
-  
-  mainLabel = paste(metricName, "on", evalSet, "set")
-  image(1:length(methods), 1:length(dataSets), z = t(heatmap), axes = FALSE, xlab = paste("Descriptor:", desc), ylab = "", main = mainLabel, cex.lab=2, cex.main = 2)
-  axis(1, 1:length(methods), colnames(heatmap))
-  axis(2, 1:length(dataSets), rownames(heatmap))
-  for (x in 1:ncol(heatmap))
-    for (y in 1:nrow(heatmap))
-      text(x, y, round(heatmap[y,x], digits = 3), cex = 2)
-  
-  #xval <- formatC(heatmap, format="f", digits=3)
-  #pal <- colorRampPalette(c(rgb(0.96,0.96,1), rgb(0.1,0.1,0.9)), space = "rgb")
-  #col=pal,
-  #x_hm <- heatmap.2(heatmap, Rowv=FALSE, Colv=FALSE, dendrogram="none", main=mainLabel, xlab= paste("Descriptor:", desc), ylab="", 
-  #                  key=FALSE,  tracecol="#303030", trace="none", cellnote=xval, notecol="black", 
-  #                  cexRow=0.7, cexCol=1.2, srtRow = 0, srtCol = 0) 
-}
 ###########################################################################
 # DESC: create scatter plot from result
 ###########################################################################

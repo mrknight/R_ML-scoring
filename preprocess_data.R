@@ -101,19 +101,20 @@ mergeDesc <- function(path1, path2, nameIndex1, nameIndex2, removeIndex = 0) {
 merge3DescCASF <- function(path, CASFset, testset = "") {
   desc1 = paste(path, CASFset, concatCutoffAndBinsize("elementsv2-SIFt"), testset, '.csv', sep='')
   desc2 = paste(path, CASFset, 'xscore', testset, '.csv', sep='')
-  mergeData = mergeDesc(desc1, desc2, nameIndex1=1,nameIndex2=1)  
-  
+  mergeData = mergeDesc(desc1, desc2, nameIndex1=1,nameIndex2=1)
+
   return (mergeData)
 }
 createRMSDdata <- function() {
   # only for CASF data
-  path = "/home/dat/WORK/DB/DESCRIPTORS/CASF/RMSD/"
+  #path = "/home/dat/WORK/DB/DESCRIPTORS/CASF/RMSD/"
+  path = "/Users/knight/Dropbox/data/RMSD/"
   #for (pre in c("CASF12_core_", "CASF13_core_", "CASF14_core_", "CASF12_refined_", "CASF13_refined_", "CASF14_refined_") ) {
   for (CASFset in c("CASF14_refined_RMSD_") ) {
     #print(CASFset)
-    createCombiData(path, prefix = CASFset, descName = c("elementsv2", "SIFt"))
-    #write.table(merge3DescCASF(path, CASFset), file = paste(path, CASFset, concatCutoffAndBinsize("elementsv2-SIFt"), "-xscore_process.csv", sep=""), sep = ",", row.names = FALSE)  
-    
+    #createCombiData(path, prefix = CASFset, descName = c("elementsv2", "SIFt"))
+    #write.table(merge3DescCASF(path, CASFset), file = paste(path, CASFset, concatCutoffAndBinsize("elementsv2-SIFt"), "-xscore_process.csv", sep=""), sep = ",", row.names = FALSE)
+
   }
 }
 createRMSDdata()

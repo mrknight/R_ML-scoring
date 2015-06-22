@@ -17,4 +17,5 @@ trainingSets = c("refined", "metallo")
 proteinList         = c("3PDQ_new", "T36_JMJ_Xray")
 stateList           = c("actives", "inactives")
 
+TRUE_RANK_CSAR13 = c(7, 8, 6, 4, 3, 5, 2, 1, 10, 9)
 dockingMethods = c("asp", "plp", "chemscore", "goldscore", "SP", "XP")
