@@ -9,7 +9,7 @@ path2Name   = "/home/dat/WORK/DB/DESCRIPTORS/CASF/"
 #path2Name   = "New/"
 
 dataSets = c("CASF12", "CASF13", "CASF14")
-descSets = c("elementsv2-SIFt", "elementsv2-SIFtv2")
+descSets = c("elementsv2-SIFt_c12b0", "elementsv2-SIFt_c12b0-xscore")
 methods  = c("RoF-REP", "RoF-RT")
 evalSets = c("training", "test")
 trainingSets = c("refined", "metallo")

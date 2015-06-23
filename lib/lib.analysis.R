@@ -1,5 +1,3 @@
-source("lib/lib.validation_extern.R")
-source("lib/lib.process_data.R")
 source("lib/configuration.R")
 ###########################################################################
 # DESC: read the classify result from weka output
@@ -18,20 +16,28 @@ readClassifyResult <- function(resultPath, data, evalSet, method, desc, cutoff =
 ###########################################################################
 # add ligand/protein ID to result of weka
 ###########################################################################
-addID <- function(result, IDPath, IDFile) {
+addID <- function(result, IDPath, IDFile, IDIndex = 1) {
   IDdata        = read.csv(paste(IDPath, IDFile, sep=""), na.strings=c(".", "NA", "", "?"))  
-  result["ID"]  = IDdata[,1]
+  if (IDIndex == "last") {
+    IDIndex = length(colnames(IDdata))
+  }
+  result["ID"]  = IDdata[,IDIndex]    
   return (result)
 }
 
 ###########################################################################
 # preprocess the scorelist by sorting it by the absolute value
 ###########################################################################
-preprocess_scorelist <- function(scorelist, scoreIndex = 2, IDindex, splitChar = '_') {
+preprocess_scorelist <- function(scorelist, scoreIndex = 2, IDindex, splitChar = '_', decreasing = TRUE) {
   # be sure that the scores are in absolute value
   scorelist[,scoreIndex] = abs(scorelist[,scoreIndex])
   # sorting the list
-  scorelist = scorelist[ order(-scorelist[,scoreIndex]), ]
+  if (decreasing) {
+    scorelist = scorelist[ order(-scorelist[,scoreIndex]), ]
+  }
+  else {
+    scorelist = scorelist[ order(scorelist[,scoreIndex]), ]
+  }
   # only getting the cs-ligand name
   if (!missing(IDindex)) {
     charPos = regexpr(splitChar, scorelist[, IDindex]) - 1
@@ -52,13 +58,13 @@ rank_bestpose <- function(scorelist, scoreIndex = 2, IDindex) {
 ###########################################################################
 # list top numberOfPoses (standard = 3) best poses
 ###########################################################################
-list_top_bestpose <- function(scorelist, numberOfPoses = 3, IDindex) {
-  poselist = preprocess_scorelist(scorelist, IDindex = IDindex)
+list_top_bestpose <- function(scorelist, numberOfPoses = 1, IDindex, decreasing = TRUE, preprocess = TRUE) {
+  poselist = preprocess_scorelist(scorelist, IDindex = IDindex, decreasing = decreasing)
   library(hash)
   keep_pose = hash(unique(poselist[,IDindex]), numberOfPoses) 
   index = 0
   for (pose in poselist[,IDindex]) {
-    index = index + 1
+    index = index + 1 # index of current pose in poselist
     if (keep_pose[[pose]] > 0) {
       keep_pose[[pose]] = keep_pose[[pose]] - 1
     }
@@ -69,6 +75,7 @@ list_top_bestpose <- function(scorelist, numberOfPoses = 3, IDindex) {
   }
   return (poselist)
 } 
+
 
 ###########################################################################
 # 
@@ -94,6 +101,7 @@ calc_average_bestpose <- function(ranklist, scoreIndex = 2, IDindex) {
   temp[,2] = as.numeric(temp[,2])
   # sort in the descending order
   #temp = temp[ order(-temp[,2]), ] 
+  colnames(temp) = c("ID", "predicted")
   return (temp)
 }
 
